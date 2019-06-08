@@ -1,0 +1,15 @@
+{
+  "customers": [
+    {
+      "customerID": 87329415,
+      "name": "小林弘治",
+      "transactions": [
+        {
+          "transactionNumber": "8945-23-0923-123",
+          "date": "2019-03-09 14:11:29.045",
+          "total": 179.29
+        }
+      ]
+    }
+  ]
+}
