@@ -160,7 +160,7 @@ var CustomerTable = function (_React$Component2) {
       // TODO: Make month names dynamic
       return React.createElement(
         "table",
-        null,
+        { className: "pure-table pure-table-horizontal" },
         React.createElement("colgroup", { span: "2" }),
         React.createElement("colgroup", { span: "4" }),
         React.createElement(
@@ -168,7 +168,7 @@ var CustomerTable = function (_React$Component2) {
           null,
           React.createElement(
             "tr",
-            null,
+            { className: "top-table-header" },
             React.createElement(
               "th",
               { colSpan: "2", scope: "colgroup" },
@@ -182,7 +182,7 @@ var CustomerTable = function (_React$Component2) {
           ),
           React.createElement(
             "tr",
-            null,
+            { className: "second-table-header" },
             React.createElement(
               "th",
               { scope: "col" },
