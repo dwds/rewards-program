@@ -2,9 +2,9 @@ Customer Rewards Program
 ===============================
 
 ## What is this?
-This is a searchable table of customer data that displays the points earned from purchases for each of three months, and the total. It is built with [React](https://reactjs.org/).
+This is a searchable table of customer data that calculates the points earned from purchases for each of three months, and the total. It is built with [React](https://reactjs.org/).
 
-You can see the data model in data.json, and the app logic and React components in src/app.js.
+You can see the data model in **data.json**, and the app logic and React components in **src/app.js**.
 
 It takes an array of customers, each with an array of transactions, and calculates the points earned based on the following rules:
 A customer receives 2 points for every dollar spent over $100 in each transaction, plus 1 point for every dollar spent over $50 in each transaction
