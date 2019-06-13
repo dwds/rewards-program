@@ -1,4 +1,3 @@
-// TODO: add more data
 // TODO: import JSON data
 // const data = require("data.json");
 // const customers = data.customers;
