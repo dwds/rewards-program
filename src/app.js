@@ -122,6 +122,15 @@ class CustomerTable extends React.Component {
 }
 
 class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+  }
+
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+
   render() {
     const filterText = this.props.filterText;
     return (
@@ -131,20 +140,28 @@ class Search extends React.Component {
           id="customer-search"
           type="search"
           placeholder="Customer name or ID…"
-          value={filterText} />
+          value={filterText}
+          onChange={this.handleFilterTextChange} />
       </form>
     );
   }
 }
 
 class SearchableCustomerTable extends React.Component {
-  // TODO: inverse data flow
   constructor(props) {
     super(props);
     this.state = {
-      filterText: 'rog'
+      filterText: ''
     };
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
   }
+
+  handleFilterTextChange(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
+
   render() {
     // TODO: Make date range user defined and set default values
     const dateRange = {
@@ -160,7 +177,8 @@ class SearchableCustomerTable extends React.Component {
     return (
         <React.Fragment>
           <Search
-            filterText={this.state.filterText} />
+            filterText={this.state.filterText}
+            onFilterTextChange={this.handleFilterTextChange} />
           <CustomerTable
             filterText={this.state.filterText}
             customers={this.props.customers}

@@ -230,13 +230,21 @@ var CustomerTable = function (_React$Component2) {
 var Search = function (_React$Component3) {
   _inherits(Search, _React$Component3);
 
-  function Search() {
+  function Search(props) {
     _classCallCheck(this, Search);
 
-    return _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).apply(this, arguments));
+    var _this4 = _possibleConstructorReturn(this, (Search.__proto__ || Object.getPrototypeOf(Search)).call(this, props));
+
+    _this4.handleFilterTextChange = _this4.handleFilterTextChange.bind(_this4);
+    return _this4;
   }
 
   _createClass(Search, [{
+    key: "handleFilterTextChange",
+    value: function handleFilterTextChange(e) {
+      this.props.onFilterTextChange(e.target.value);
+    }
+  }, {
     key: "render",
     value: function render() {
       var filterText = this.props.filterText;
@@ -252,7 +260,8 @@ var Search = function (_React$Component3) {
           id: "customer-search",
           type: "search",
           placeholder: "Customer name or ID\u2026",
-          value: filterText })
+          value: filterText,
+          onChange: this.handleFilterTextChange })
       );
     }
   }]);
@@ -263,19 +272,26 @@ var Search = function (_React$Component3) {
 var SearchableCustomerTable = function (_React$Component4) {
   _inherits(SearchableCustomerTable, _React$Component4);
 
-  // TODO: inverse data flow
   function SearchableCustomerTable(props) {
     _classCallCheck(this, SearchableCustomerTable);
 
     var _this5 = _possibleConstructorReturn(this, (SearchableCustomerTable.__proto__ || Object.getPrototypeOf(SearchableCustomerTable)).call(this, props));
 
     _this5.state = {
-      filterText: 'rog'
+      filterText: ''
     };
+    _this5.handleFilterTextChange = _this5.handleFilterTextChange.bind(_this5);
     return _this5;
   }
 
   _createClass(SearchableCustomerTable, [{
+    key: "handleFilterTextChange",
+    value: function handleFilterTextChange(filterText) {
+      this.setState({
+        filterText: filterText
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       // TODO: Make date range user defined and set default values
@@ -297,7 +313,8 @@ var SearchableCustomerTable = function (_React$Component4) {
         React.Fragment,
         null,
         React.createElement(Search, {
-          filterText: this.state.filterText }),
+          filterText: this.state.filterText,
+          onFilterTextChange: this.handleFilterTextChange }),
         React.createElement(CustomerTable, {
           filterText: this.state.filterText,
           customers: this.props.customers,
