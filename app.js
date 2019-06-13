@@ -9,7 +9,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // TODO: import JSON data
 // const data = require("data.json");
 // const customers = data.customers;
-var data = JSON.parse('{ "customers": [ { "ID": 87329415, "name": "小林弘治", "transactions": [ { "transactionNumber": "8945-23-0923-123", "date": "2019-03-09 14:11:29", "total": 179.29 }, { "transactionNumber": "8493-11-0009-443", "date": "2019-03-19 06:39:22", "total": 78.89 }, { "transactionNumber": "9032-13-9430-444", "date": "2019-03-25 00:15:11", "total": 23.90 }, { "transactionNumber": "1059-43-5583-090", "date": "2019-04-04 22:34:13", "total": 282.04 }, { "transactionNumber": "0923-44-8598-004", "date": "2019-05-05 08:34:31", "total": 49.63 }, { "transactionNumber": "8934-89-6093-900", "date": "2019-05-17 13:19:15", "total": 149.14 } ] } ]}');
+var data = JSON.parse('{ "customers": [ { "ID": 87329415, "name": "小林弘治", "transactions": [ { "transactionNumber": "8945-23-0923-123", "date": "2019-03-09T14:11:29.443Z", "total": 179.29 }, { "transactionNumber": "8493-11-0009-443", "date": "2019-03-19T06:39:22.893Z", "total": 78.89 }, { "transactionNumber": "9032-13-9430-444", "date": "2019-03-25T00:15:11.032Z", "total": 23.90 }, { "transactionNumber": "1059-43-5583-090", "date": "2019-04-04T22:34:13.556Z", "total": 282.04 }, { "transactionNumber": "0923-44-8598-004", "date": "2019-05-05T08:34:31.196Z", "total": 49.63 }, { "transactionNumber": "8934-89-6093-900", "date": "2019-05-17T13:19:15.492Z", "total": 149.14 } ] } ]}');
 
 var customers = data.customers;
 
@@ -28,34 +28,62 @@ var CustomerRow = function (_React$Component) {
       var customer = this.props.customer;
 
       // TODO: separate month picker functionality
-      var month1 = 3;
-      var month2 = 4;
-      var month3 = 5;
+      var startDate = new Date(2019, 2);
+      var endDate = new Date(2019, 4 + 1, 0, 23, 59, 59, 999);
+      // get UNIX times for date comparison
+      var startTime = startDate.getTime();
+      var endTime = endDate.getTime();
 
-      var month1Points = 0;
-      var month2Points = 0;
-      var month3Points = 0;
+      var months = [2, 3, 4]; // months are 0 indexed (0 = Jan)
 
-      var transactions = customer.transactions;
+      /* This creates a dynamic object of monthPoints with an arbitrary
+         range of months, so that the functionality of the app
+         could be expanded to include any user-defined range of months.
+          format:
+         monthPoints = {
+          monthAsNumber: pointTotal,
+          ...
+        }
+      */
+      var monthPoints = {};
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      transactions.forEach(function (transaction) {
-        // TODO: extract parseMonth function
-        // TODO: check if full date is within correct range
+      try {
+        for (var _iterator = months[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var month = _step.value;
+
+          monthPoints[month] = 0;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      customer.transactions.forEach(function (transaction) {
+        // TODO: extract parseDate function
         var dateAsString = transaction.date;
-        var date = new Date(dateAsString);
-        var month = date.getMonth() + 1; // getMonth() returns 0–11 … 0 = Jan
+        var transactionDate = new Date(dateAsString);
+        var transactionTime = transactionDate.getTime();
+        var transactionMonth = transactionDate.getMonth(); // getMonth() returns 0–11 (0 = Jan)
 
         var purchaseTotal = Math.floor(transaction.total);
         var points = 0;
 
-        if (purchaseTotal < 51) {
-          // total was not enough to earn points
-          return;
-        } else if (false) {
-          // TODO: Check if date is in range
-          // date was not in range
-          return;
-        } else {
+        if (purchaseTotal > 50 && transactionTime >= startTime && transactionTime <= endTime) {
+          // transaction is in correct date range, and qualifies for points
+
           // TODO: extract point calculation function
           // TODO: abstract point values
           if (purchaseTotal > 100) {
@@ -63,22 +91,25 @@ var CustomerRow = function (_React$Component) {
           } else {
             points = purchaseTotal - 50;
           }
-          // TODO: set this in a month object instead of switch?
-          switch (month) {
-            case month1:
-              month1Points += points;
-              break;
-            case month2:
-              month2Points += points;
-              break;
-            case month3:
-              month3Points += points;
-              break;
-          }
+
+          monthPoints[transactionMonth] += points;
         }
       });
 
-      var totalPoints = month1Points + month2Points + month3Points;
+      // calculate totalPoints from arbitrarily large monthPoints object
+      var totalPoints = Object.values(monthPoints).reduce(function (a, b) {
+        return a + b;
+      });
+
+      var monthCells = [];
+
+      months.forEach(function (month) {
+        monthCells.push(React.createElement(
+          "td",
+          { key: month },
+          monthPoints[month]
+        ));
+      });
 
       return React.createElement(
         "tr",
@@ -93,21 +124,7 @@ var CustomerRow = function (_React$Component) {
           null,
           customer.name
         ),
-        React.createElement(
-          "td",
-          null,
-          month1Points
-        ),
-        React.createElement(
-          "td",
-          null,
-          month2Points
-        ),
-        React.createElement(
-          "td",
-          null,
-          month3Points
-        ),
+        monthCells,
         React.createElement(
           "td",
           null,
