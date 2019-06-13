@@ -8,10 +8,59 @@ const customers = data.customers;
 class CustomerRow extends React.Component {
   render() {
     const customer = this.props.customer;
-    // TODO: calculate point totals
+
+    // TODO: separate month picker functionality
+    const month1 = 3;
+    const month2 = 4;
+    const month3 = 5;
+
     let month1Points = 0;
     let month2Points = 0;
     let month3Points = 0;
+
+    const transactions = customer.transactions;
+
+
+    transactions.forEach((transaction) => {
+      // TODO: extract parseMonth function
+      // TODO: check if full date is within correct range
+      const dateAsString = transaction.date;
+      const date = new Date(dateAsString);
+      const month = date.getMonth() + 1; // getMonth() returns 0–11 … 0 = Jan
+
+      const purchaseTotal = Math.floor(transaction.total);
+      let points = 0;
+
+      if (purchaseTotal < 51) {
+        // total was not enough to earn points
+        return;
+      } else if (false) {
+        // TODO: Check if date is in range
+        // date was not in range
+        return;
+      } else {
+        // TODO: extract point calculation function
+        // TODO: abstract point values
+        if (purchaseTotal > 100) {
+          points = (2 * (purchaseTotal - 100)) + 50;
+        } else {
+          points = purchaseTotal - 50;
+        }
+        // TODO: set this in a month object instead of switch?
+        switch (month) {
+          case month1:
+            month1Points += points;
+            break;
+          case month2:
+            month2Points += points;
+            break;
+          case month3:
+            month3Points += points;
+            break;
+        }
+      }
+    });
+
     let totalPoints = month1Points + month2Points + month3Points;
 
     return (

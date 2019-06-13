@@ -9,7 +9,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // TODO: import JSON data
 // const data = require("data.json");
 // const customers = data.customers;
-var data = JSON.parse('{"customers": [{"ID": 87329415,"name": "小林弘治","transactions": [{"transactionNumber": "8945-23-0923-123","date": "2019-03-09 14:11:29.045","total": 179.29}]}]}');
+var data = JSON.parse('{ "customers": [ { "ID": 87329415, "name": "小林弘治", "transactions": [ { "transactionNumber": "8945-23-0923-123", "date": "2019-03-09 14:11:29", "total": 179.29 }, { "transactionNumber": "8493-11-0009-443", "date": "2019-03-19 06:39:22", "total": 78.89 }, { "transactionNumber": "9032-13-9430-444", "date": "2019-03-25 00:15:11", "total": 23.90 }, { "transactionNumber": "1059-43-5583-090", "date": "2019-04-04 22:34:13", "total": 282.04 }, { "transactionNumber": "0923-44-8598-004", "date": "2019-05-05 08:34:31", "total": 49.63 }, { "transactionNumber": "8934-89-6093-900", "date": "2019-05-17 13:19:15", "total": 149.14 } ] } ]}');
 
 var customers = data.customers;
 
@@ -26,10 +26,58 @@ var CustomerRow = function (_React$Component) {
     key: "render",
     value: function render() {
       var customer = this.props.customer;
-      // TODO: calculate point totals
+
+      // TODO: separate month picker functionality
+      var month1 = 3;
+      var month2 = 4;
+      var month3 = 5;
+
       var month1Points = 0;
       var month2Points = 0;
       var month3Points = 0;
+
+      var transactions = customer.transactions;
+
+      transactions.forEach(function (transaction) {
+        // TODO: extract parseMonth function
+        // TODO: check if full date is within correct range
+        var dateAsString = transaction.date;
+        var date = new Date(dateAsString);
+        var month = date.getMonth() + 1; // getMonth() returns 0–11 … 0 = Jan
+
+        var purchaseTotal = Math.floor(transaction.total);
+        var points = 0;
+
+        if (purchaseTotal < 51) {
+          // total was not enough to earn points
+          return;
+        } else if (false) {
+          // TODO: Check if date is in range
+          // date was not in range
+          return;
+        } else {
+          // TODO: extract point calculation function
+          // TODO: abstract point values
+          if (purchaseTotal > 100) {
+            points = 2 * (purchaseTotal - 100) + 50;
+          } else {
+            points = purchaseTotal - 50;
+          }
+          // TODO: set this in a month object instead of switch?
+          switch (month) {
+            case month1:
+              month1Points += points;
+              break;
+            case month2:
+              month2Points += points;
+              break;
+            case month3:
+              month3Points += points;
+              break;
+          }
+        }
+      });
+
       var totalPoints = month1Points + month2Points + month3Points;
 
       return React.createElement(
