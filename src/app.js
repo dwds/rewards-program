@@ -5,18 +5,27 @@ const data = JSON.parse('{ "customers": [ { "ID": 87329415, "name": "小林弘�
 
 const customers = data.customers;
 
+const parseDate = (dateAsString) => {
+  const date = new Date(dateAsString);
+  return {
+    unixTime: date.getTime(),
+    month: date.getMonth()
+  }
+};
+
+// TODO: abstract point values
+const calculatePoints = (purchaseTotal) => {
+  if (purchaseTotal > 100) {
+    return (2 * (purchaseTotal - 100)) + 50;
+  } else {
+    return purchaseTotal - 50;
+  }
+};
+
 class CustomerRow extends React.Component {
   render() {
     const customer = this.props.customer;
-
-    // TODO: separate month picker functionality
-    const startDate = new Date(2019, 2);
-    const endDate = new Date(2019, 4 + 1, 0, 23, 59, 59, 999);
-    // get UNIX times for date comparison
-    const startTime = startDate.getTime();
-    const endTime = endDate.getTime();
-
-    const months = [2, 3, 4]; // months are 0 indexed (0 = Jan)
+    const dateRange = this.props.dateRange;
 
     /* This creates a dynamic object of monthPoints with an arbitrary
        range of months, so that the functionality of the app
@@ -29,32 +38,19 @@ class CustomerRow extends React.Component {
       }
     */
     const monthPoints = {};
-    for (let month of months) {
+    for (let month of dateRange.months) {
       monthPoints[month] = 0;
     }
 
     customer.transactions.forEach((transaction) => {
-      // TODO: extract parseDate function
-      const dateAsString = transaction.date;
-      const transactionDate = new Date(dateAsString);
-      const transactionTime = transactionDate.getTime();
-      const transactionMonth = transactionDate.getMonth(); // getMonth() returns 0–11 (0 = Jan)
-
+      const transactionDate = parseDate(transaction.date);
       const purchaseTotal = Math.floor(transaction.total);
-      let points = 0;
 
-      if (purchaseTotal > 50 && transactionTime >= startTime && transactionTime <= endTime) {
+      if (purchaseTotal > 50 && transactionDate.unixTime >= dateRange.startTime
+        && transactionDate.unixTime <= dateRange.endTime) {
         // transaction is in correct date range, and qualifies for points
-
-        // TODO: extract point calculation function
-        // TODO: abstract point values
-        if (purchaseTotal > 100) {
-          points = (2 * (purchaseTotal - 100)) + 50;
-        } else {
-          points = purchaseTotal - 50;
-        }
-
-        monthPoints[transactionMonth] += points;
+        let points = calculatePoints(purchaseTotal);
+        monthPoints[transactionDate.month] += points;
       }
     });
 
@@ -62,8 +58,8 @@ class CustomerRow extends React.Component {
     let totalPoints = Object.values(monthPoints).reduce((a, b) => a + b);
 
     const monthCells = [];
-    
-    months.forEach((month) => {
+
+    dateRange.months.forEach((month) => {
       monthCells.push(
         <td key={month}>{monthPoints[month]}</td>
       );
@@ -88,6 +84,7 @@ class CustomerTable extends React.Component {
       rows.push(
         <CustomerRow
           customer={customer}
+          dateRange={this.props.dateRange}
           key={customer.ID} />
       );
     });
@@ -133,10 +130,21 @@ class Search extends React.Component {
 
 class SearchableCustomerTable extends React.Component {
   render() {
+    const dateRange = {
+      startDate: new Date(2019, 2),
+      endDate: new Date(2019, 4 + 1, 0, 23, 59, 59, 999),
+      months: [2, 3, 4], // months are 0 indexed (0 = Jan)
+      // get UNIX times for date comparison
+      get startTime() { return this.startDate.getTime() },
+      get endTime() { return this.endDate.getTime() }
+    }
+
     return (
         <React.Fragment>
           <Search />
-          <CustomerTable customers={this.props.customers} />
+          <CustomerTable
+            customers={this.props.customers}
+            dateRange={dateRange} />
         </React.Fragment>
     );
   }
