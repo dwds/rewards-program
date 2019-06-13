@@ -1,3 +1,4 @@
+// TODO: add more data
 // TODO: import JSON data
 // const data = require("data.json");
 // const customers = data.customers;
@@ -99,6 +100,7 @@ class CustomerTable extends React.Component {
             <th colSpan="2" scope="colgroup">Customer</th>
             <th colSpan="4" scope="colgroup">Points Earned</th>
           </tr>
+          // TODO: Make month names dynamic
           <tr>
             <th scope="col">ID</th>
             <th scope="col">Name</th>
@@ -129,10 +131,14 @@ class Search extends React.Component {
 }
 
 class SearchableCustomerTable extends React.Component {
+  // TODO: implement state
+  // TODO: inverse data flow
   render() {
+    // TODO: Make date range user defined and set default values
     const dateRange = {
       startDate: new Date(2019, 2),
       endDate: new Date(2019, 4 + 1, 0, 23, 59, 59, 999),
+      // TODO: Create months array based on date range
       months: [2, 3, 4], // months are 0 indexed (0 = Jan)
       // get UNIX times for date comparison
       get startTime() { return this.startDate.getTime() },

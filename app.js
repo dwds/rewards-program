@@ -6,6 +6,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+// TODO: add more data
 // TODO: import JSON data
 // const data = require("data.json");
 // const customers = data.customers;
@@ -177,6 +178,7 @@ var CustomerTable = function (_React$Component2) {
               "Points Earned"
             )
           ),
+          "// TODO: Make month names dynamic",
           React.createElement(
             "tr",
             null,
@@ -263,10 +265,15 @@ var SearchableCustomerTable = function (_React$Component4) {
 
   _createClass(SearchableCustomerTable, [{
     key: "render",
+
+    // TODO: implement state
+    // TODO: inverse data flow
     value: function render() {
+      // TODO: Make date range user defined and set default values
       var dateRange = {
         startDate: new Date(2019, 2),
         endDate: new Date(2019, 4 + 1, 0, 23, 59, 59, 999),
+        // TODO: Create months array based on date range
         months: [2, 3, 4], // months are 0 indexed (0 = Jan)
         // get UNIX times for date comparison
         get startTime() {
