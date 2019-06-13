@@ -143,9 +143,14 @@ var CustomerTable = function (_React$Component2) {
     value: function render() {
       var _this3 = this;
 
+      var locale = this.props.locale || "en-US";
+      var filterText = this.props.filterText.toLocaleLowerCase(locale);
       var rows = [];
 
       this.props.customers.forEach(function (customer) {
+        if (customer.name.toLocaleLowerCase(locale).indexOf(filterText) === -1 && customer.ID.toLocaleLowerCase(locale).indexOf(filterText) === -1) {
+          return;
+        }
         rows.push(React.createElement(CustomerRow, {
           customer: customer,
           dateRange: _this3.props.dateRange,
@@ -234,6 +239,7 @@ var Search = function (_React$Component3) {
   _createClass(Search, [{
     key: "render",
     value: function render() {
+      var filterText = this.props.filterText;
       return React.createElement(
         "form",
         null,
@@ -242,7 +248,11 @@ var Search = function (_React$Component3) {
           { htmlFor: "customer-search" },
           "Search for customer"
         ),
-        React.createElement("input", { id: "customer-search", type: "search", placeholder: "Customer name or ID\u2026" })
+        React.createElement("input", {
+          id: "customer-search",
+          type: "search",
+          placeholder: "Customer name or ID\u2026",
+          value: filterText })
       );
     }
   }]);
@@ -253,17 +263,20 @@ var Search = function (_React$Component3) {
 var SearchableCustomerTable = function (_React$Component4) {
   _inherits(SearchableCustomerTable, _React$Component4);
 
-  function SearchableCustomerTable() {
+  // TODO: inverse data flow
+  function SearchableCustomerTable(props) {
     _classCallCheck(this, SearchableCustomerTable);
 
-    return _possibleConstructorReturn(this, (SearchableCustomerTable.__proto__ || Object.getPrototypeOf(SearchableCustomerTable)).apply(this, arguments));
+    var _this5 = _possibleConstructorReturn(this, (SearchableCustomerTable.__proto__ || Object.getPrototypeOf(SearchableCustomerTable)).call(this, props));
+
+    _this5.state = {
+      filterText: 'rog'
+    };
+    return _this5;
   }
 
   _createClass(SearchableCustomerTable, [{
     key: "render",
-
-    // TODO: implement state
-    // TODO: inverse data flow
     value: function render() {
       // TODO: Make date range user defined and set default values
       var dateRange = {
@@ -283,8 +296,10 @@ var SearchableCustomerTable = function (_React$Component4) {
       return React.createElement(
         React.Fragment,
         null,
-        React.createElement(Search, null),
+        React.createElement(Search, {
+          filterText: this.state.filterText }),
         React.createElement(CustomerTable, {
+          filterText: this.state.filterText,
           customers: this.props.customers,
           dateRange: dateRange })
       );

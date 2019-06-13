@@ -75,9 +75,15 @@ class CustomerRow extends React.Component {
 
 class CustomerTable extends React.Component {
   render() {
+    const locale = this.props.locale || "en-US";
+    const filterText = this.props.filterText.toLocaleLowerCase(locale);
     const rows = [];
 
     this.props.customers.forEach((customer) => {
+      if (customer.name.toLocaleLowerCase(locale).indexOf(filterText) === -1 &&
+          customer.ID.toLocaleLowerCase(locale).indexOf(filterText) === -1) {
+        return;
+      }
       rows.push(
         <CustomerRow
           customer={customer}
@@ -117,18 +123,28 @@ class CustomerTable extends React.Component {
 
 class Search extends React.Component {
   render() {
+    const filterText = this.props.filterText;
     return (
       <form>
         <label htmlFor="customer-search">Search for customer</label>
-        <input id="customer-search" type="search" placeholder="Customer name or ID…" />
+        <input
+          id="customer-search"
+          type="search"
+          placeholder="Customer name or ID…"
+          value={filterText} />
       </form>
     );
   }
 }
 
 class SearchableCustomerTable extends React.Component {
-  // TODO: implement state
   // TODO: inverse data flow
+  constructor(props) {
+    super(props);
+    this.state = {
+      filterText: 'rog'
+    };
+  }
   render() {
     // TODO: Make date range user defined and set default values
     const dateRange = {
@@ -143,8 +159,10 @@ class SearchableCustomerTable extends React.Component {
 
     return (
         <React.Fragment>
-          <Search />
+          <Search
+            filterText={this.state.filterText} />
           <CustomerTable
+            filterText={this.state.filterText}
             customers={this.props.customers}
             dateRange={dateRange} />
         </React.Fragment>
